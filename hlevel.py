@@ -43,7 +43,7 @@ class HLevel(list):
     reprnum = [ "1", "I", "i", "A", "a", "①", "一", "¹", "₁", "１" ]
 
     forbidden_characters_in_prefix_and_suffix = [
-                "1", "2", "3", "4", "5", "6", "7", "8", "9",
+                "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
                 
                 "a", "b", "c", "d", "e", "f", "g", "h", "i",
                 "j", "k", "l", "m", "n", "o", "p", "q", "r",
@@ -67,21 +67,67 @@ class HLevel(list):
 
                 "０", "１", "２", "３", "４", "５", "６", "７", "８", "９",
                 ]
-        
+
+    arabicnumber_symbols = ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9",)
+
+    capitalletter_symbols = ("A", "B", "C", "D", "E", "F", "G", "H", "I", \
+                             "J", "K", "L", "M", "N", "O", "P", "Q", "R", \
+                             "S", "T", "U", "V", "W", "X", "Y", "Z",)        
 
     #///////////////////////////////////////////////////////////////////////////
-    def __init__(self, src=None):
+    def __init__(self, src=None, formatstr=None):
         """
                 HLevel.__init__
 
                 src     : (str)
         """
         list.__init__(self)
-        
-        self.setFormat( HLevel.defaultformat )
+
+        if formatstr is None:
+            self.setFormat( HLevel.defaultformat )
+        else:
+            self.setFormat( formatstr )
 
         if src is not None:
-            self.setData(src)
+            self.initFromStr(src)
+
+    #///////////////////////////////////////////////////////////////////////////
+    def getNumberFromArabicNumber( self, strnumber ):
+        """
+                HLevel.getNumberFromArabicNumber
+
+                strnumber       : (str)
+        """
+        if len( [char for char in strnumber if char not in HLevel.arabicnumber_symbols]) != 0:
+            msg = "(HLevel.getNumberFromArabicNumber) " \
+                  "In '{0}', there is (at least) one unknown symbol. " \
+                  "Allowed symbols are {1}."
+            raise Exception(msg.format(strnumber,
+                                       HLevel.arabicnumber_symbols))
+                    
+        return int(strnumber)
+
+    #///////////////////////////////////////////////////////////////////////////
+    def getNumberFromCapitalLetter( self, strnumber ):
+        """
+                HLevel.getNumberFromCapitalLetter
+
+                strnumber       : (str)
+        """
+        if len( [char for char in strnumber if char not in HLevel.capitalletter_symbols]) != 0:
+            msg = "(HLevel.getNumberFromCapitalLetter) " \
+                  "In '{0}', there is (at least) one unknown symbol. " \
+                  "Allowed symbols are {1}."
+            raise Exception(msg.format(strnumber,
+                                       HLevel.arabicnumber_symbols))
+
+        res = 0
+        for index_char, char in enumerate(strnumber[::-1]):
+            res += (10 ** index_char) * (ord(char)-65)
+            
+        return res
+            
+
 
     #///////////////////////////////////////////////////////////////////////////
     def getRepr(self):
@@ -202,7 +248,7 @@ class HLevel(list):
             msg = "HLevel.getReprCapitalLetter : can interpret number {0} as a capital letter."
             raise Exception( msg.format(number) )
 
-        return chr(64 + number)
+        return chr(65 + number)
 
     #///////////////////////////////////////////////////////////////////////////
     def getReprCapitalRomanNumber(self, number):
@@ -381,6 +427,40 @@ class HLevel(list):
             res.append( digit_to_superscriptdigit[digit] )
 
         return "".join(res)
+
+    #///////////////////////////////////////////////////////////////////////////
+    def initFromStr(self, _src):
+        """
+                HLevel.initFromStr
+
+                _src     : (str)
+
+                Initialize <self> from (str)_src.
+        """
+        if not (_src.startswith(self.prefix) and _src.endswith(self.suffix)):
+
+            msg = "(HLevel.initFromStr) missing prefix '{0}' or suffix '{1}' in string '{2}'."
+            raise Exception(msg.format(self.prefix,
+                                       self.suffix,
+                                       _src))
+
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        self.clear()
+
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # no prefix, no suffix :
+        src = _src[len(self.prefix):-len(self.suffix)]
+
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        for strnumber_index, strnumber in enumerate(src.split(self.separator)):
+
+            number_format = self.numbers_format[strnumber_index]
+
+            if number_format == '1':
+                self.append( self.getNumberFromArabicNumber( strnumber ))
+
+            elif number_format == 'A':
+                self.append( self.getNumberFromCapitalLetter( strnumber ))
 
     #///////////////////////////////////////////////////////////////////////////
     def setFormat(self, formatstr):
