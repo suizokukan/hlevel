@@ -91,12 +91,12 @@ class HLevel(list):
         # numbers :
         for number_index, number in enumerate(self):
 
-            number_format = self.numbers_format[number_index]
-
             if number_index+1 > len_numbers_format:
-                msg = "HLevel.getRepr : too many digits in {0}; numbers expected are {1}."
-                raise Exception( msg.format("".join(res),
+                msg = "HLevel.getRepr : too many numbers in {0}; expected pattern is {1}."
+                raise Exception( msg.format(".".join( map(str, self)),
                                               self.numbers_format))
+
+            number_format = self.numbers_format[number_index]
 
             if number_format == '1':
                 res.append( self.getReprArabicNumber( number ))
