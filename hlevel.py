@@ -22,6 +22,12 @@
     ❏HLevel❏ : hlevel/hlevel.py
 
     * HLevel class
+
+    formatstring =   "." (separator : one character)
+                   + "(" (prefix : zero, one or more characters)
+                   + "A.I.3" (symbols followed by the separator, if the separator is a non empty
+                              string). Available symbols : see HLevel.reprnum
+                   + ")" (suffix : zero, one or more characters)
 """
 
 ################################################################################
@@ -34,7 +40,7 @@ class HLevel(list):
     defaultformat = ".(1111111111)"
 
     # accepted symbols in a format string :
-    reprnum = [ "1", "I", "i", "A", "a", "①", "一", "¹", "₁" ]
+    reprnum = [ "1", "I", "i", "A", "a", "①", "一", "¹", "₁", "１" ]
 
     forbidden_characters_in_prefix_and_suffix = [
                 "1", "2", "3", "4", "5", "6", "7", "8", "9",
@@ -58,6 +64,8 @@ class HLevel(list):
                 '⁰', '¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸', '⁹',
 
                 '₀', '₁', '₂', '₃', '₄', '₅', '₆', '₇', '₈', '₉',
+
+                "０", "１", "２", "３", "４", "５", "６", "７", "８", "９",
                 ]
         
 
@@ -124,6 +132,9 @@ class HLevel(list):
 
             elif number_format == '₁':
                 res.append( self.getReprSubscriptNumeral( number ))
+
+            elif number_format == '１':
+                res.append( self.getReprArabicNumberFullWidth( number ))
                 
             else:
                 msg = "HLevel.getRepr : unknown number format '0'; expected formats are {1}."
@@ -148,6 +159,37 @@ class HLevel(list):
                 number  : (int)
         """
         return str(number)
+
+    #///////////////////////////////////////////////////////////////////////////
+    def getReprArabicNumberFullWidth(self, number):
+        """
+                HLevel.getReprArabicNumberFullWidth
+
+                number  : (int)
+        """
+        strnumber = str(number)
+
+        res = []
+
+        digit_to_fullwidthdigit = {
+                "-"     : "-",
+                "0"     : "０",
+                "1"     : "１",
+                "2"     : "２",
+                "3"     : "３",
+                "4"     : "４",
+                "5"     : "５",
+                "6"     : "６",
+                "7"     : "７",
+                "8"     : "８",
+                "9"     : "９",
+            }
+
+        for digit in str(number):
+            res.append( digit_to_fullwidthdigit[digit] )
+
+        return "".join(res)
+
 
     #///////////////////////////////////////////////////////////////////////////
     def getReprCapitalLetter(self, number):
@@ -287,16 +329,12 @@ class HLevel(list):
 
                 number  : (int)
         """
-        if number < 0:
-            msg = "HLevel.getReprSubscriptNumeral : " \
-                  "can interpret number {0} as a subscript number."
-            raise Exception( msg.format(number) )
-
         strnumber = str(number)
 
         res = []
 
         digit_to_subscriptdigit = {
+                "-"     : "-",
                 "0"     : chr(0x2080),
                 "1"     : chr(0x2081),
                 "2"     : chr(0x2082),
@@ -321,16 +359,12 @@ class HLevel(list):
 
                 number  : (int)
         """
-        if number < 0:
-            msg = "HLevel.getReprSuperscriptNumeral : " \
-                  "can interpret number {0} as a superscrit number."
-            raise Exception( msg.format(number) )
-
         strnumber = str(number)
 
         res = []
 
         digit_to_superscriptdigit = {
+                "-"     : "-",
                 "0"     : chr(0x2070),
                 "1"     : chr(0x00B9),
                 "2"     : chr(0x00B2),
