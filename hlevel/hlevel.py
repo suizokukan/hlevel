@@ -44,8 +44,8 @@ class HLevel(list):
     # default representation of the object :
     defaultformat = ".(1111111111)"
 
-    # accepted numbers in a format string :
-    reprnum = [ "1", "I", "i", "A", "a", "①", "一" ]
+    # accepted symbols in a format string :
+    reprnum = [ "1", "I", "i", "A", "a", "①", "一", "¹", "₁" ]
 
     #///////////////////////////////////////////////////////////////////////////
     def __init__(self, src=None):
@@ -104,6 +104,12 @@ class HLevel(list):
 
             elif number_format == '一':
                 res.append( self.getReprJapaneseNumber( number ))
+
+            elif number_format == '¹':
+                res.append( self.getReprSuperscriptNumeral( number ))
+
+            elif number_format == '₁':
+                res.append( self.getReprSubscriptNumeral( number ))
                 
             else:
                 msg = "HLevel.getRepr : unknown number format '0'; expected formats are {1}."
@@ -231,6 +237,10 @@ class HLevel(list):
 
                 if int(digit)>1:
                     res.insert( 0, japanese_digits[int(digit)] )
+
+            else:
+                msg = "HLevel.getReprJapaneseNumber : can interpret number {0} as a Japanese number."
+                raise HLevelError( msg.format(number) )
                 
         return "".join(res)
     
@@ -255,6 +265,74 @@ class HLevel(list):
                 number  : (int)
         """
         return self.getReprCapitalRomanNumber(number).lower()
+
+    #///////////////////////////////////////////////////////////////////////////
+    def getReprSubscriptNumeral(self, number):
+        """
+                HLevel.getReprSubscriptNumeral
+
+                number  : (int)
+        """
+        if number < 0:
+            msg = "HLevel.getReprSubscriptNumeral : " \
+                  "can interpret number {0} as a subscript number."
+            raise HLevelError( msg.format(number) )
+
+        strnumber = str(number)
+
+        res = []
+
+        digit_to_subscriptdigit = {
+                "0"     : chr(0x2080),
+                "1"     : chr(0x2081),
+                "2"     : chr(0x2082),
+                "3"     : chr(0x2083),
+                "4"     : chr(0x2084),
+                "5"     : chr(0x2085),
+                "6"     : chr(0x2086),
+                "7"     : chr(0x2087),
+                "8"     : chr(0x2088),
+                "9"     : chr(0x2089),
+            }
+
+        for digit in str(number):
+            res.append( digit_to_subscriptdigit[digit] )
+
+        return "".join(res)
+
+    #///////////////////////////////////////////////////////////////////////////
+    def getReprSuperscriptNumeral(self, number):
+        """
+                HLevel.getReprSuperscriptNumeral
+
+                number  : (int)
+        """
+        if number < 0:
+            msg = "HLevel.getReprSuperscriptNumeral : " \
+                  "can interpret number {0} as a superscrit number."
+            raise HLevelError( msg.format(number) )
+
+        strnumber = str(number)
+
+        res = []
+
+        digit_to_superscriptdigit = {
+                "0"     : chr(0x2070),
+                "1"     : chr(0x00B9),
+                "2"     : chr(0x00B2),
+                "3"     : chr(0x00B3),
+                "4"     : chr(0x2074),
+                "5"     : chr(0x2075),
+                "6"     : chr(0x2076),
+                "7"     : chr(0x2077),
+                "8"     : chr(0x2078),
+                "9"     : chr(0x2079),
+            }
+
+        for digit in str(number):
+            res.append( digit_to_superscriptdigit[digit] )
+
+        return "".join(res)
 
     #///////////////////////////////////////////////////////////////////////////
     def setFormat(self, formatstr):
@@ -287,4 +365,3 @@ class HLevel(list):
 
             else:
                 self.suffix += char
-                
