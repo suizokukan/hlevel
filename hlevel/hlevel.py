@@ -45,7 +45,7 @@ class HLevel(list):
     defaultformat = ".(1111111111)"
 
     # accepted numbers in a format string :
-    reprnum = [ "1", "I", "i", "A", "a", "①" ]
+    reprnum = [ "1", "I", "i", "A", "a", "①", "一" ]
 
     #///////////////////////////////////////////////////////////////////////////
     def __init__(self, src=None):
@@ -85,7 +85,7 @@ class HLevel(list):
                                               self.numbers_format))
 
             if number_format == '1':
-                res.append( self.getReprArabicNumeral( number ))
+                res.append( self.getReprArabicNumber( number ))
 
             elif number_format == 'A':
                 res.append( self.getReprCapitalLetter( number ))
@@ -94,13 +94,16 @@ class HLevel(list):
                 res.append( self.getReprLowerCaseLetter( number ))
 
             elif number_format == 'I':
-                res.append( self.getReprCapitalRomanNumeral( number ))
+                res.append( self.getReprCapitalRomanNumber( number ))
 
             elif number_format == 'i':
-                res.append( self.getReprLowerCaseRomanNumeral( number ))
+                res.append( self.getReprLowerCaseRomanNumber( number ))
 
             elif number_format == '①':
-                res.append( self.getReprEnclosedNumeral( number ))
+                res.append( self.getReprEnclosedNumber( number ))
+
+            elif number_format == '一':
+                res.append( self.getReprJapaneseNumber( number ))
                 
             else:
                 msg = "HLevel.getRepr : unknown number format '0'; expected formats are {1}."
@@ -118,9 +121,9 @@ class HLevel(list):
         return "".join(res)
 
     #///////////////////////////////////////////////////////////////////////////
-    def getReprArabicNumeral(self, number):
+    def getReprArabicNumber(self, number):
         """
-                HLevel.getReprArabicNumeral
+                HLevel.getReprArabicNumber
 
                 number  : (int)
         """
@@ -140,14 +143,14 @@ class HLevel(list):
         return chr(64 + number)
 
     #///////////////////////////////////////////////////////////////////////////
-    def getReprCapitalRomanNumeral(self, number):
+    def getReprCapitalRomanNumber(self, number):
         """
-                HLevel.getReprCapitalRomanNumeral
+                HLevel.getReprCapitalRomanNumber
 
                 number  : (int)
         """
         if number < 1 or number > 1999:
-            msg = "HLevel.getReprCapitalRomanNumeral : can interpret number {0} as a Roman numeral."
+            msg = "HLevel.getReprCapitalRomanNumber : can interpret number {0} as a Roman numeral."
             raise HLevelError( msg.format(number) )
         
         data = (('M',  1000),
@@ -175,18 +178,62 @@ class HLevel(list):
         return res
 
     #///////////////////////////////////////////////////////////////////////////
-    def getReprEnclosedNumeral(self, number):
+    def getReprEnclosedNumber(self, number):
         """
-                HLevel.getReprEnclosedNumeral
+                HLevel.getReprEnclosedNumber
 
                 number  : (int)
         """
         if number < 1 or number > 20:
-            msg = "HLevel.getReprEnclosedNumeral : can interpret number {0} as an enclosed numeral."
+            msg = "HLevel.getReprEnclosedNumber : can interpret number {0} as an enclosed numeral."
             raise HLevelError( msg.format(number) )
 
         return chr(0x2460 + number - 1 )
 
+    #///////////////////////////////////////////////////////////////////////////
+    def getReprJapaneseNumber(self, number):
+        """
+                HLevel.getReprJapaneseNumber
+
+                number  : (int)
+        """
+        if number < 1 or number > 9999:
+            msg = "HLevel.getReprJapaneseNumber : can interpret number {0} as a Japanese number."
+            raise HLevelError( msg.format(number) )
+
+        japanese_digits = [ '〇', '一', '二', '三', '四', '五', '六', '七', '八', '九']
+
+        res = []
+        strnumber = str(number)
+
+        for position, digit in enumerate(strnumber[::-1]):
+
+            if position == 0:
+                res.insert( 0, japanese_digits[int(digit)] )
+
+            elif position == 1 and int(digit) != 0:
+
+                res.insert( 0, "十" )
+
+                if int(digit)>1:
+                    res.insert( 0, japanese_digits[int(digit)] )
+
+            elif position == 2 and int(digit) != 0:
+
+                res.insert( 0, "百" )
+
+                if int(digit)>1:
+                    res.insert( 0, japanese_digits[int(digit)] )
+
+            elif position == 3 and int(digit) != 0:
+
+                res.insert( 0, "千" )
+
+                if int(digit)>1:
+                    res.insert( 0, japanese_digits[int(digit)] )
+                
+        return "".join(res)
+    
     #///////////////////////////////////////////////////////////////////////////
     def getReprLowerCaseLetter(self, number):
         """
@@ -201,13 +248,13 @@ class HLevel(list):
         return self.getReprCapitalLetter(number).lower()
 
     #///////////////////////////////////////////////////////////////////////////
-    def getReprLowerCaseRomanNumeral(self, number):
+    def getReprLowerCaseRomanNumber(self, number):
         """
-                HLevel.getReprLowerCaseRomanNumeral
+                HLevel.getReprLowerCaseRomanNumber
 
                 number  : (int)
         """
-        return self.getReprCapitalRomanNumeral(number).lower()
+        return self.getReprCapitalRomanNumber(number).lower()
 
     #///////////////////////////////////////////////////////////////////////////
     def setFormat(self, formatstr):
