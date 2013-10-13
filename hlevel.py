@@ -28,6 +28,9 @@
                    + "A.I.3" (symbols followed by the separator, if the separator is a non empty
                               string). Available symbols : see HLevel.reprnum
                    + ")" (suffix : zero, one or more characters)
+
+    If you want the first number to be <n>, set HLevel.first_number to <n>; by example, with
+    HLevel.first_number set to 0, the first number will be 0 (and not 1).
 """
 
 ################################################################################
@@ -35,6 +38,10 @@ class HLevel(list):
     """
         HLevel class
     """
+
+    # default value is the most common for a hierarchical level but feel free to
+    # change it !
+    first_number = 1
 
     # default representation of the object :
     defaultformat = ".(1111111111)"
@@ -126,8 +133,6 @@ class HLevel(list):
             res += (10 ** index_char) * (ord(char)-65)
             
         return res
-            
-
 
     #///////////////////////////////////////////////////////////////////////////
     def getRepr(self):
@@ -144,6 +149,11 @@ class HLevel(list):
 
         # numbers :
         for number_index, number in enumerate(self):
+
+            if number < HLevel.first_number:
+                msg = "(HLevel.getRepr) number {0} is less than HLevel.first_number={1}"
+                raise Exception(msg.format(number,
+                                           HLevel.first_number))
 
             if number_index+1 > len_numbers_format:
                 msg = "HLevel.getRepr : too many numbers in {0}; expected pattern is {1}."
@@ -236,7 +246,6 @@ class HLevel(list):
 
         return "".join(res)
 
-
     #///////////////////////////////////////////////////////////////////////////
     def getReprCapitalLetter(self, number):
         """
@@ -244,11 +253,9 @@ class HLevel(list):
 
                 number  : (int)
         """
-        if number < 1 or number > 26:
-            msg = "HLevel.getReprCapitalLetter : can interpret number {0} as a capital letter."
-            raise Exception( msg.format(number) )
-
-        return chr(65 + number)
+        return self.stringBase( number = number,
+                                base = 26,
+                                digits = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" )
 
     #///////////////////////////////////////////////////////////////////////////
     def getReprCapitalRomanNumber(self, number):
@@ -257,8 +264,9 @@ class HLevel(list):
 
                 number  : (int)
         """
-        if number < 1 or number > 4999:
-            msg = "HLevel.getReprCapitalRomanNumber : can interpret number {0} as a Roman numeral."
+        if number < 0:
+            msg = "HLevel.getReprCapitalRomanNumber : can interpret number {0} as " \
+                  "a Roman numeral. Number must be greater than 0."
             raise Exception( msg.format(number) )
         
         data = (('M',  1000),
@@ -293,7 +301,8 @@ class HLevel(list):
                 number  : (int)
         """
         if number < 1 or number > 20:
-            msg = "HLevel.getReprEnclosedNumber : can interpret number {0} as an enclosed numeral."
+            msg = "HLevel.getReprEnclosedNumber : can interpret number {0} as " \
+                  "an enclosed numeral. Expected range is [1;20]"
             raise Exception( msg.format(number) )
 
         return chr(0x2460 + number - 1 )
@@ -306,7 +315,8 @@ class HLevel(list):
                 number  : (int)
         """
         if number < 1 or number > 9999:
-            msg = "HLevel.getReprJapaneseNumber : can interpret number {0} as a Japanese number."
+            msg = "HLevel.getReprJapaneseNumber : can interpret number {0} as " \
+                  "a Japanese number. Expected range is [1;9999]"
             raise Exception( msg.format(number) )
 
         japanese_digits = [ '〇', '一', '二', '三', '四', '五', '六', '七', '八', '九']
@@ -353,11 +363,9 @@ class HLevel(list):
 
                 number  : (int)
         """
-        if number < 1 or number > 26:
-            msg = "HLevel.getReprLowerCaseLetter : can interpret number {0} as a letter."
-            raise Exception( msg.format(number) )
-
-        return self.getReprCapitalLetter(number).lower()
+        return self.stringBase( number = number,
+                                base = 26,
+                                digits = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" ).lower()
 
     #///////////////////////////////////////////////////////////////////////////
     def getReprLowerCaseRomanNumber(self, number):
@@ -496,3 +504,24 @@ class HLevel(list):
 
             else:
                 raise Exception("HLevel.setFormat : wrong format string = '{0}'".format(formatstr))
+
+    #///////////////////////////////////////////////////////////////////////////
+    def stringBase(self,
+                   number,
+                   base,
+                   digits = "0123456789ABCDEF"):
+        """
+                   HLevel.stringBase
+
+                   number       : (int)
+                   base         : (int)
+                   digits       : (str)symbols like "01234564789"
+
+                   Return the string corresponding to <number> written in the base <base> using
+                   the <digits>.
+        """
+        (d, m) = divmod(number - HLevel.first_number, base)
+        if d:
+            return self.stringBase(d, base, digits) + digits[m]
+        else:
+            return digits[m]
