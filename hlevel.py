@@ -67,6 +67,18 @@ class HLevel(list):
     japanesenumber_symbols = ( '〇', '一', '二', '三', '四', '五', '六', '七', '八', '九',
                                "十", "百", "千" )
 
+    superscript_symbols = ( "-",
+                            chr(0x2070), chr(0x00B9), chr(0x00B2), chr(0x00B3), chr(0x2074),
+                            chr(0x2075), chr(0x2076), chr(0x2077), chr(0x2078), chr(0x2079)
+                            )
+
+    subscript_symbols = ( "-",
+                          chr(0x2080), chr(0x2081), chr(0x2082), chr(0x2083), chr(0x2084),
+                          chr(0x2085), chr(0x2086), chr(0x2087), chr(0x2088), chr(0x2089)
+                        )
+
+    fullwidth_symbols = ("０", "１", "２", "３", "４", "５", "６", "７", "８", "９",)
+
     forbidden_characters_in_prefix_and_suffix = (
                 arabicnumber_symbols + \
                 capitalletter_symbols + \
@@ -74,7 +86,10 @@ class HLevel(list):
                 capitalromannumber_symbols + \
                 lowercaseromannumber_symbols + \
                 enclosedletter_symbols + \
-                japanesenumber_symbols )
+                japanesenumber_symbols + \
+                superscript_symbols + \
+                subscript_symbols + \
+                fullwidth_symbols )
 
     #///////////////////////////////////////////////////////////////////////////
     def __init__(self, src=None, formatstr=None, first_number = 1):
@@ -206,6 +221,34 @@ class HLevel(list):
         return ord(strnumber) - 0x2460 + 1
 
     #///////////////////////////////////////////////////////////////////////////
+    def getNumberFromFullWidthNumeral(self, strnumber ):
+        """
+                HLevel.getNumberFromFullWidthNumeral
+        """
+        if len( [char for char in strnumber if char not in HLevel.fullwidth_symbols]) != 0:
+            msg = "(HLevel.getNumberFromFullWidthNumeral) " \
+                  "In '{0}', there is (at least) one unknown symbol. " \
+                  "Allowed symbols are {1}."
+            raise Exception(msg.format(strnumber,
+                                       HLevel.fullwidth_symbols))
+
+        data = { "-"    : "-",
+                 "０"   : 0,
+                 "１"   : 1,
+                 "２"   : 2,
+                 "３"   : 3,
+                 "４"   : 4,
+                 "５"   : 5,
+                 "６"   : 6,
+                 "７"   : 7,
+                 "８"   : 8,
+                 "９"   : 9}
+
+        _strnumber = "".join( str(data[char]) for char in strnumber )
+
+        return int(_strnumber)
+
+    #///////////////////////////////////////////////////////////////////////////
     def getNumberFromJapaneseNumber( self, strnumber ):
         """
                 HLevel.getNumberFromJapaneseNumber
@@ -302,6 +345,62 @@ class HLevel(list):
                                        self.first_number))
 
         return self.getNumberFromCapitalRomanNumber( strnumber.upper() )
+
+    #///////////////////////////////////////////////////////////////////////////
+    def getNumberFromSubscriptNumeral(self, strnumber):
+        """
+                HLevel.getNumberFromSubscriptNumeral
+        """
+        if len( [char for char in strnumber if char not in HLevel.subscript_symbols]) != 0:
+            msg = "(HLevel.getNumberFromSubscriptNumeral) " \
+                  "In '{0}', there is (at least) one unknown symbol. " \
+                  "Allowed symbols are {1}."
+            raise Exception(msg.format(strnumber,
+                                       HLevel.subscript_symbols))
+        
+        data = { "-"     : "-",
+                 chr(0x2080) : 0,
+                 chr(0x2081) : 1,
+                 chr(0x2082) : 2,
+                 chr(0x2083) : 3,
+                 chr(0x2084) : 4,
+                 chr(0x2085) : 5,
+                 chr(0x2086) : 6,
+                 chr(0x2087) : 7,
+                 chr(0x2088) : 8,
+                 chr(0x2089) : 9}
+
+        _strnumber = "".join( str(data[char]) for char in strnumber )
+
+        return int(_strnumber)
+
+    #///////////////////////////////////////////////////////////////////////////
+    def getNumberFromSuperscriptNumeral(self, strnumber):
+        """
+                HLevel.getNumberFromSuperscriptNumeral
+        """
+        if len( [char for char in strnumber if char not in HLevel.superscript_symbols]) != 0:
+            msg = "(HLevel.getNumberFromSuperscriptNumeral) " \
+                  "In '{0}', there is (at least) one unknown symbol. " \
+                  "Allowed symbols are {1}."
+            raise Exception(msg.format(strnumber,
+                                       HLevel.superscript_symbols))
+        
+        data = { "-"     : "-",
+                 chr(0x2070) : 0,
+                 chr(0x00B9) : 1,
+                 chr(0x00B2) : 2,
+                 chr(0x00B3) : 3,
+                 chr(0x2074) : 4,
+                 chr(0x2075) : 5,
+                 chr(0x2076) : 6,
+                 chr(0x2077) : 7,
+                 chr(0x2078) : 8,
+                 chr(0x2079) : 9}
+
+        _strnumber = "".join( str(data[char]) for char in strnumber )
+
+        return int(_strnumber)
 
     #///////////////////////////////////////////////////////////////////////////
     def getRepr(self):
@@ -676,6 +775,14 @@ class HLevel(list):
             elif number_format == '一':
                 self.append( self.getNumberFromJapaneseNumber( strnumber ))
 
+            elif number_format == '¹':
+                self.append( self.getNumberFromSuperscriptNumeral( strnumber ))
+
+            elif number_format == '₁':
+                self.append( self.getNumberFromSubscriptNumeral( strnumber ))
+
+            elif number_format == '１':
+                self.append( self.getNumberFromFullWidthNumeral( strnumber ))
 
     #///////////////////////////////////////////////////////////////////////////
     def setFormat(self, formatstr):
