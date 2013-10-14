@@ -85,6 +85,11 @@ class HLevel(list):
 
     lowercaseromannumber_symbols = ( "i", "v", "x", "l", "c", "d", "m" )
 
+    enclosedletter_symbols = ( "①", "②", "③", "④", "⑤",
+                               "⑥", "⑦", "⑧", "⑨", "⑩",
+                               "⑪", "⑫", "⑬", "⑭", "⑮",
+                               "⑯", "⑰", "⑱", "⑲", "⑳" )
+
     #///////////////////////////////////////////////////////////////////////////
     def __init__(self, src=None, formatstr=None, first_number = 1):
         """
@@ -99,7 +104,7 @@ class HLevel(list):
                 ... Use other values only if you know exactly what your doing; by example, with
                 <first_number> set to 0, 'A'=0, 'AA'=0, 'B'=1, 'AB' = 'B' = 1, ...
                 Some number representations demand that <first_number> be set to 1 : capital roman
-                number, lowletter roman number.
+                number, lowletter roman number and enclosed number.
         """
         list.__init__(self)
 
@@ -192,6 +197,27 @@ class HLevel(list):
                 index += len(numeral)
                 
         return res
+
+    #///////////////////////////////////////////////////////////////////////////
+    def getNumberFromEnclosedNumber( self, strnumber ):
+        """
+                HLevel.getNumberFromEnclosedNumber
+
+                strnumber       : (str)                
+        """
+        if len( [char for char in strnumber if char not in HLevel.enclosedletter_symbols]) != 0:
+            msg = "(HLevel.getNumberFromEnclosedNumber) " \
+                  "In '{0}', there is (at least) one unknown symbol. " \
+                  "Allowed symbols are {1}."
+            raise Exception(msg.format(strnumber,
+                                       HLevel.enclosedletter_symbols))
+
+        if len(strnumber) != 1:
+            msg = "(HLevel.getNumberFromEnclosedNumber) " \
+                  "Multiple character in '{0}', which is forbidden."
+            raise Exception(msg.format(strnumber))
+
+        return ord(strnumber) - 0x2460 + 1
 
     #///////////////////////////////////////////////////////////////////////////
     def getNumberFromLowercaseLetter( self, strnumber ):
@@ -414,6 +440,13 @@ class HLevel(list):
                   "an enclosed numeral. Expected range is [1;20]"
             raise Exception( msg.format(number) )
 
+        if self.first_number != 1:
+            msg = "(HLevel.getReprEnclosedNumber) " \
+                  "You can't use enclosed numbers (number read : {0}) if " \
+                  "self.first_number (='{0}') is not set to 1."
+            raise Exception(msg.format(number,
+                                       self.first_number))
+
         return chr(0x2460 + number - 1 )
 
     #///////////////////////////////////////////////////////////////////////////
@@ -599,6 +632,9 @@ class HLevel(list):
 
             elif number_format == 'i':
                 self.append( self.getNumberFromLowercaseRomanNumber( strnumber ))
+
+            elif number_format == '①':
+                self.append( self.getNumberFromEnclosedNumber( strnumber ))
 
     #///////////////////////////////////////////////////////////////////////////
     def setFormat(self, formatstr):
