@@ -45,32 +45,6 @@ class HLevel(list):
     # accepted symbols in a format string :
     reprnum = [ "1", "I", "i", "A", "a", "①", "一", "¹", "₁", "１" ]
 
-    forbidden_characters_in_prefix_and_suffix = [
-                "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
-                
-                "a", "b", "c", "d", "e", "f", "g", "h", "i",
-                "j", "k", "l", "m", "n", "o", "p", "q", "r",
-                "s", "t", "u", "v", "w", "x", "y", "z",
-
-                "A", "B", "C", "D", "E", "F", "G", "H", "I",
-                "J", "K", "L", "M", "N", "O", "P", "Q", "R",
-                "S", "T", "U", "V", "W", "X", "Y", "Z",
-
-                "①", "②", "③", "④", "⑤",
-                "⑥", "⑦", "⑧", "⑨", "⑩",
-                "⑪", "⑫", "⑬", "⑭", "⑮",
-                "⑯", "⑰", "⑱", "⑲", "⑳",
-
-                '〇', '一', '二', '三', '四', '五', '六', '七', '八', '九',
-                '十', '百', '千',
-
-                '⁰', '¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸', '⁹',
-
-                '₀', '₁', '₂', '₃', '₄', '₅', '₆', '₇', '₈', '₉',
-
-                "０", "１", "２", "３", "４", "５", "６", "７", "８", "９",
-                ]
-
     arabicnumber_symbols = ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9",)
 
     capitalletter_symbols = ("A", "B", "C", "D", "E", "F", "G", "H", "I", \
@@ -89,6 +63,14 @@ class HLevel(list):
                                "⑥", "⑦", "⑧", "⑨", "⑩",
                                "⑪", "⑫", "⑬", "⑭", "⑮",
                                "⑯", "⑰", "⑱", "⑲", "⑳" )
+
+    forbidden_characters_in_prefix_and_suffix = (
+                arabicnumber_symbols + \
+                capitalletter_symbols + \
+                lowercaseletter_symbols + \
+                capitalromannumber_symbols + \
+                lowercaseromannumber_symbols + \
+                enclosedletter_symbols )
 
     #///////////////////////////////////////////////////////////////////////////
     def __init__(self, src=None, formatstr=None, first_number = 1):
