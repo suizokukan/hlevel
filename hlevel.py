@@ -39,10 +39,12 @@ class HLevel(list):
         HLevel class
     """
 
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # default representation of the object :
     defaultformat = ".(1111111111)"
 
-    # accepted symbols in a format string :
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # accepted symbols in each format string :
     reprnum = [ "1", "I", "i", "A", "a", "①", "一", "¹", "₁", "１" ]
 
     arabicnumber_symbols = ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9",)
@@ -79,7 +81,9 @@ class HLevel(list):
 
     fullwidth_symbols = ("０", "１", "２", "３", "４", "５", "６", "７", "８", "９",)
 
-    forbidden_characters_in_prefix_and_suffix = (
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # forbidden characters in prefix and suffix string :
+    invalid_chars_in_pre_suffix = (
                 arabicnumber_symbols + \
                 capitalletter_symbols + \
                 lowercaseletter_symbols + \
@@ -109,6 +113,11 @@ class HLevel(list):
         """
         list.__init__(self)
 
+        self.separator = ""
+        self.prefix = ""
+        self.suffix = ""
+        self.numbers_format = [] # E.g ['A', 'I', '1']
+
         self.first_number = first_number
 
         if formatstr is None:
@@ -132,7 +141,7 @@ class HLevel(list):
                   "Allowed symbols are {1}."
             raise Exception(msg.format(strnumber,
                                        HLevel.arabicnumber_symbols))
-                    
+
         return int(strnumber)
 
     #///////////////////////////////////////////////////////////////////////////
@@ -152,7 +161,7 @@ class HLevel(list):
         res = 0
         for index_char, char in enumerate(strnumber[::-1]):
             res += (26 ** index_char) * (ord(char) - 65 + self.first_number)
-            
+
         return res
 
     #///////////////////////////////////////////////////////////////////////////
@@ -196,7 +205,7 @@ class HLevel(list):
             while strnumber[index:index+len(numeral)] == numeral:
                 res += integer
                 index += len(numeral)
-                
+
         return res
 
     #///////////////////////////////////////////////////////////////////////////
@@ -204,7 +213,7 @@ class HLevel(list):
         """
                 HLevel.getNumberFromEnclosedNumber
 
-                strnumber       : (str)                
+                strnumber       : (str)
         """
         if len( [char for char in strnumber if char not in HLevel.enclosedletter_symbols]) != 0:
             msg = "(HLevel.getNumberFromEnclosedNumber) " \
@@ -271,14 +280,14 @@ class HLevel(list):
                        '七' : 7,
                        '八' : 8,
                        '九' : 9}
-            
+
         data_mul = {'十' : 10,
                     '百' : 100,
                     '千' : 1000,}
 
         if strnumber == '〇':
             return 0
-        
+
         else:
             res = 0
             digit = None
@@ -320,25 +329,26 @@ class HLevel(list):
         res = 0
         for index_char, char in enumerate(strnumber[::-1]):
             res += (26 ** index_char) * (ord(char) - 97 + self.first_number)
-            
+
         return res
 
     #///////////////////////////////////////////////////////////////////////////
-    def getNumberFromLowercaseRomanNumber( self, strnumber ):
+    def getNumberFromLowercRomanNumber( self, strnumber ):
         """
-                HLevel.getNumberFromLowercaseRomanNumber
+                HLevel.getNumberFromLowercRomanNumber
 
                 strnumber       : (str)
         """
-        if len( [char for char in strnumber if char not in HLevel.lowercaseromannumber_symbols]) != 0:
-            msg = "(HLevel.getNumberFromLowercaseRomanNumber) " \
+        if len( [char for char in strnumber \
+                 if char not in HLevel.lowercaseromannumber_symbols]) != 0:
+            msg = "(HLevel.getNumberFromLowercRomanNumber) " \
                   "In '{0}', there is (at least) one unknown symbol. " \
                   "Allowed symbols are {1}."
             raise Exception(msg.format(strnumber,
                                        HLevel.lowercaseromannumber_symbols))
 
         if self.first_number != 1:
-            msg = "(HLevel.getNumberFromLowercaseRomanNumber) " \
+            msg = "(HLevel.getNumberFromLowercRomanNumber) " \
                   "You can't use roman numbers (number read : {0}) if " \
                   "self.first_number (='{0}') is not set to 1."
             raise Exception(msg.format(strnumber,
@@ -357,7 +367,7 @@ class HLevel(list):
                   "Allowed symbols are {1}."
             raise Exception(msg.format(strnumber,
                                        HLevel.subscript_symbols))
-        
+
         data = { "-"     : "-",
                  chr(0x2080) : 0,
                  chr(0x2081) : 1,
@@ -385,7 +395,7 @@ class HLevel(list):
                   "Allowed symbols are {1}."
             raise Exception(msg.format(strnumber,
                                        HLevel.superscript_symbols))
-        
+
         data = { "-"     : "-",
                  chr(0x2070) : 0,
                  chr(0x00B9) : 1,
@@ -459,7 +469,7 @@ class HLevel(list):
 
             elif number_format == '１':
                 res.append( self.getReprArabicNumberFullWidth( number ))
-                
+
             else:
                 msg = "HLevel.getRepr : unknown number format '0'; expected formats are {1}."
                 raise Exception(msg.format(number_format,
@@ -509,7 +519,7 @@ class HLevel(list):
                 "9"     : "９",
             }
 
-        for digit in str(number):
+        for digit in str(strnumber):
             res.append( digit_to_fullwidthdigit[digit] )
 
         return "".join(res)
@@ -543,7 +553,7 @@ class HLevel(list):
                   "self.first_number (='{0}') is not set to 1."
             raise Exception(msg.format(number,
                                        self.first_number))
-        
+
         data = (('M',  1000),
                 ('CM', 900),
                 ('D',  500),
@@ -559,13 +569,13 @@ class HLevel(list):
                 ('I',  1))
 
         res = ""
-        n = number
-        
+        decreasing_num = number
+
         for num, integer in data:
-            while n >= integer:
+            while decreasing_num >= integer:
                 res += num
-                n -= integer
-                
+                decreasing_num -= integer
+
         return res
 
     #///////////////////////////////////////////////////////////////////////////
@@ -631,9 +641,9 @@ class HLevel(list):
 
                 if int(digit)>1:
                     res.insert( 0, japanese_digits[int(digit)] )
-                
+
         return "".join(res)
-    
+
     #///////////////////////////////////////////////////////////////////////////
     def getReprLowerCaseLetter(self, number):
         """
@@ -691,7 +701,7 @@ class HLevel(list):
                 "9"     : chr(0x2089),
             }
 
-        for digit in str(number):
+        for digit in str(strnumber):
             res.append( digit_to_subscriptdigit[digit] )
 
         return "".join(res)
@@ -721,7 +731,7 @@ class HLevel(list):
                 "9"     : chr(0x2079),
             }
 
-        for digit in str(number):
+        for digit in str(strnumber):
             res.append( digit_to_superscriptdigit[digit] )
 
         return "".join(res)
@@ -767,7 +777,7 @@ class HLevel(list):
                 self.append( self.getNumberFromCapitalRomanNumber( strnumber ))
 
             elif number_format == 'i':
-                self.append( self.getNumberFromLowercaseRomanNumber( strnumber ))
+                self.append( self.getNumberFromLowercRomanNumber( strnumber ))
 
             elif number_format == '①':
                 self.append( self.getNumberFromEnclosedNumber( strnumber ))
@@ -813,7 +823,7 @@ class HLevel(list):
             elif char in HLevel.reprnum:
                 self.numbers_format.append(char)
 
-            elif char not in HLevel.forbidden_characters_in_prefix_and_suffix:
+            elif char not in HLevel.invalid_chars_in_pre_suffix:
                 self.suffix += char
 
             else:
@@ -834,8 +844,8 @@ class HLevel(list):
                    Return the string corresponding to <number> written in the base <base> using
                    the <digits>.
         """
-        (d, m) = divmod(number - self.first_number, base)
-        if d:
-            return self.stringBase(d, base, digits) + digits[m]
+        (div, mod) = divmod(number - self.first_number, base)
+        if div:
+            return self.stringBase(div, base, digits) + digits[mod]
         else:
-            return digits[m]
+            return digits[mod]
