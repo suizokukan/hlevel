@@ -132,7 +132,7 @@ class HLevel(list):
         for index_char, char in enumerate(strnumber[::-1]):
             res += (10 ** index_char) * (ord(char)-65)
             
-        return res
+        return res + HLevel.first_number
 
     #///////////////////////////////////////////////////////////////////////////
     def getRepr(self):
