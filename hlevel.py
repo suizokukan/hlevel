@@ -64,13 +64,17 @@ class HLevel(list):
                                "⑪", "⑫", "⑬", "⑭", "⑮",
                                "⑯", "⑰", "⑱", "⑲", "⑳" )
 
+    japanesenumber_symbols = ( '〇', '一', '二', '三', '四', '五', '六', '七', '八', '九',
+                               "十", "百", "千" )
+
     forbidden_characters_in_prefix_and_suffix = (
                 arabicnumber_symbols + \
                 capitalletter_symbols + \
                 lowercaseletter_symbols + \
                 capitalromannumber_symbols + \
                 lowercaseromannumber_symbols + \
-                enclosedletter_symbols )
+                enclosedletter_symbols + \
+                japanesenumber_symbols )
 
     #///////////////////////////////////////////////////////////////////////////
     def __init__(self, src=None, formatstr=None, first_number = 1):
@@ -200,6 +204,61 @@ class HLevel(list):
             raise Exception(msg.format(strnumber))
 
         return ord(strnumber) - 0x2460 + 1
+
+    #///////////////////////////////////////////////////////////////////////////
+    def getNumberFromJapaneseNumber( self, strnumber ):
+        """
+                HLevel.getNumberFromJapaneseNumber
+
+                strnumber       : (str)
+        """
+        if len( [char for char in strnumber if char not in HLevel.japanesenumber_symbols]) != 0:
+            msg = "(HLevel.getNumberFromJapaneseNumber) " \
+                  "In '{0}', there is (at least) one unknown symbol. " \
+                  "Allowed symbols are {1}."
+            raise Exception(msg.format(strnumber,
+                                       HLevel.japanesenumber_symbols))
+
+        data_digits = {'一' : 1,
+                       '二' : 2,
+                       '三' : 3,
+                       '四' : 4,
+                       '五' : 5,
+                       '六' : 6,
+                       '七' : 7,
+                       '八' : 8,
+                       '九' : 9}
+            
+        data_mul = {'十' : 10,
+                    '百' : 100,
+                    '千' : 1000,}
+
+        if strnumber == '〇':
+            return 0
+        
+        else:
+            res = 0
+            digit = None
+            mul = 0
+            for index_char, char in enumerate(strnumber):
+
+                if char in data_mul:
+                    mul = data_mul[char]
+                    if digit is None:
+                        res += mul
+                    else:
+                        res += mul * digit
+
+                    digit = None
+                    mul = 0
+                else:
+                    digit = data_digits[char]
+                    mul = 0
+
+                    if index_char == len(strnumber)-1:
+                        res += digit
+
+        return res
 
     #///////////////////////////////////////////////////////////////////////////
     def getNumberFromLowercaseLetter( self, strnumber ):
@@ -473,10 +532,6 @@ class HLevel(list):
 
                 if int(digit)>1:
                     res.insert( 0, japanese_digits[int(digit)] )
-
-            else:
-                msg = "HLevel.getReprJapaneseNumber : can interpret number {0} as a Japanese number."
-                raise Exception( msg.format(number) )
                 
         return "".join(res)
     
@@ -617,6 +672,10 @@ class HLevel(list):
 
             elif number_format == '①':
                 self.append( self.getNumberFromEnclosedNumber( strnumber ))
+
+            elif number_format == '一':
+                self.append( self.getNumberFromJapaneseNumber( strnumber ))
+
 
     #///////////////////////////////////////////////////////////////////////////
     def setFormat(self, formatstr):
