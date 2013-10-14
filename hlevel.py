@@ -81,6 +81,10 @@ class HLevel(list):
                              "j", "k", "l", "m", "n", "o", "p", "q", "r", \
                              "s", "t", "u", "v", "w", "x", "y", "z",)
 
+    capitalromannumber_symbols = ( "I", "V", "X", "L", "C", "D", "M" )
+
+    lowercaseromannumber_symbols = ( "i", "v", "x", "l", "c", "d", "m" )
+
     #///////////////////////////////////////////////////////////////////////////
     def __init__(self, src=None, formatstr=None, first_number = 1):
         """
@@ -89,6 +93,13 @@ class HLevel(list):
                 src             : (str)
                 formatstr       :  str or None
                 first_number    : (int)
+
+                about <first_number> :
+                Beware ! The normal value for <first_number> is 1 : 'A'=1, 'B'=2, ..., "AA" = 27,
+                ... Use other values only if you know exactly what your doing; by example, with
+                <first_number> set to 0, 'A'=0, 'AA'=0, 'B'=1, 'AB' = 'B' = 1, ...
+                Some number representations demand that <first_number> be set to 1 : capital roman
+                number, lowletter roman number.
         """
         list.__init__(self)
 
@@ -139,6 +150,50 @@ class HLevel(list):
         return res
 
     #///////////////////////////////////////////////////////////////////////////
+    def getNumberFromCapitalRomanNumber( self, strnumber ):
+        """
+                HLevel.getNumberFromCapitalRomanNumber
+
+                strnumber       : (str)
+        """
+        if len( [char for char in strnumber if char not in HLevel.capitalromannumber_symbols]) != 0:
+            msg = "(HLevel.getNumberFromCapitalRomanNumber) " \
+                  "In '{0}', there is (at least) one unknown symbol. " \
+                  "Allowed symbols are {1}."
+            raise Exception(msg.format(strnumber,
+                                       HLevel.capitalromannumber_symbols))
+
+        if self.first_number != 1:
+            msg = "(HLevel.getNumberFromCapitalRomanNumber) " \
+                  "You can't use roman numbers (number read : {0}) if " \
+                  "self.first_number (='{0}') is not set to 1."
+            raise Exception(msg.format(strnumber,
+                                       self.first_number))
+
+        data = (('M',  1000),
+                ('CM', 900),
+                ('D',  500),
+                ('CD', 400),
+                ('C',  100),
+                ('XC', 90),
+                ('L',  50),
+                ('XL', 40),
+                ('X',  10),
+                ('IX', 9),
+                ('V',  5),
+                ('IV', 4),
+                ('I',  1))
+
+        res = 0
+        index = 0
+        for numeral, integer in data:
+            while strnumber[index:index+len(numeral)] == numeral:
+                res += integer
+                index += len(numeral)
+                
+        return res
+
+    #///////////////////////////////////////////////////////////////////////////
     def getNumberFromLowcaseLetter( self, strnumber ):
         """
                 HLevel.getNumberFromLowcaseLetter
@@ -157,6 +212,29 @@ class HLevel(list):
             res += (26 ** index_char) * (ord(char) - 97 + self.first_number)
             
         return res
+
+    #///////////////////////////////////////////////////////////////////////////
+    def getNumberFromLowcaseRomanNumber( self, strnumber ):
+        """
+                HLevel.getNumberFromLowcaseRomanNumber
+
+                strnumber       : (str)
+        """
+        if len( [char for char in strnumber if char not in HLevel.lowercaseromannumber_symbols]) != 0:
+            msg = "(HLevel.getNumberFromLowcaseRomanNumber) " \
+                  "In '{0}', there is (at least) one unknown symbol. " \
+                  "Allowed symbols are {1}."
+            raise Exception(msg.format(strnumber,
+                                       HLevel.lowercaseromannumber_symbols))
+
+        if self.first_number != 1:
+            msg = "(HLevel.getNumberFromLowcaseRomanNumber) " \
+                  "You can't use roman numbers (number read : {0}) if " \
+                  "self.first_number (='{0}') is not set to 1."
+            raise Exception(msg.format(strnumber,
+                                       self.first_number))
+
+        return self.getNumberFromCapitalRomanNumber( strnumber.upper() )
 
     #///////////////////////////////////////////////////////////////////////////
     def getRepr(self):
@@ -292,6 +370,13 @@ class HLevel(list):
             msg = "HLevel.getReprCapitalRomanNumber : can interpret number {0} as " \
                   "a Roman numeral. Number must be greater than 0."
             raise Exception( msg.format(number) )
+
+        if self.first_number != 1:
+            msg = "(HLevel.getReprCapitalRomanNumber) " \
+                  "You can't use roman numbers (number read : {0}) if " \
+                  "self.first_number (='{0}') is not set to 1."
+            raise Exception(msg.format(number,
+                                       self.first_number))
         
         data = (('M',  1000),
                 ('CM', 900),
@@ -398,6 +483,18 @@ class HLevel(list):
 
                 number  : (int)
         """
+        if number < 0:
+            msg = "HLevel.getReprLowcaseRomanNumber : can interpret number {0} as " \
+                  "a Roman numeral. Number must be greater than 0."
+            raise Exception( msg.format(number) )
+
+        if self.first_number != 1:
+            msg = "(HLevel.getReprLowcaseRomanNumber) " \
+                  "You can't use roman numbers (number read : {0}) if " \
+                  "self.first_number (='{0}') is not set to 1."
+            raise Exception(msg.format(number,
+                                       self.first_number))
+
         return self.getReprCapitalRomanNumber(number).lower()
 
     #///////////////////////////////////////////////////////////////////////////
@@ -496,6 +593,12 @@ class HLevel(list):
 
             elif number_format == 'a':
                 self.append( self.getNumberFromLowcaseLetter( strnumber ))
+
+            elif number_format == 'I':
+                self.append( self.getNumberFromCapitalRomanNumber( strnumber ))
+
+            elif number_format == 'i':
+                self.append( self.getNumberFromLowcaseRomanNumber( strnumber ))
 
     #///////////////////////////////////////////////////////////////////////////
     def setFormat(self, formatstr):
