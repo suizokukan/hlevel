@@ -75,7 +75,11 @@ class HLevel(list):
 
     capitalletter_symbols = ("A", "B", "C", "D", "E", "F", "G", "H", "I", \
                              "J", "K", "L", "M", "N", "O", "P", "Q", "R", \
-                             "S", "T", "U", "V", "W", "X", "Y", "Z",)        
+                             "S", "T", "U", "V", "W", "X", "Y", "Z",)
+
+    lowcaseletter_symbols = ("a", "b", "c", "d", "e", "f", "h", "j", "i", \
+                             "j", "k", "l", "m", "n", "o", "p", "q", "r", \
+                             "s", "t", "u", "v", "w", "x", "y", "z",)
 
     #///////////////////////////////////////////////////////////////////////////
     def __init__(self, src=None, formatstr=None, first_number = 1):
@@ -126,13 +130,33 @@ class HLevel(list):
                   "In '{0}', there is (at least) one unknown symbol. " \
                   "Allowed symbols are {1}."
             raise Exception(msg.format(strnumber,
-                                       HLevel.arabicnumber_symbols))
+                                       HLevel.capitalletter_symbols))
 
         res = 0
         for index_char, char in enumerate(strnumber[::-1]):
-            res += (10 ** index_char) * (ord(char)-65)
+            res += (26 ** index_char) * (ord(char) - 65 + self.first_number)
             
-        return res + self.first_number
+        return res
+
+    #///////////////////////////////////////////////////////////////////////////
+    def getNumberFromLowcaseLetter( self, strnumber ):
+        """
+                HLevel.getNumberFromLowcaseLetter
+
+                strnumber       : (str)
+        """
+        if len( [char for char in strnumber if char not in HLevel.lowcaseletter_symbols]) != 0:
+            msg = "(HLevel.getNumberFromLowcaseLetter) " \
+                  "In '{0}', there is (at least) one unknown symbol. " \
+                  "Allowed symbols are {1}."
+            raise Exception(msg.format(strnumber,
+                                       HLevel.lowcaseletter_symbols))
+
+        res = 0
+        for index_char, char in enumerate(strnumber[::-1]):
+            res += (26 ** index_char) * (ord(char) - 97 + self.first_number)
+            
+        return res
 
     #///////////////////////////////////////////////////////////////////////////
     def getRepr(self):
@@ -469,6 +493,9 @@ class HLevel(list):
 
             elif number_format == 'A':
                 self.append( self.getNumberFromCapitalLetter( strnumber ))
+
+            elif number_format == 'a':
+                self.append( self.getNumberFromLowcaseLetter( strnumber ))
 
     #///////////////////////////////////////////////////////////////////////////
     def setFormat(self, formatstr):
