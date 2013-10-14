@@ -29,8 +29,8 @@
                               string). Available symbols : see HLevel.reprnum
                    + ")" (suffix : zero, one or more characters)
 
-    If you want the first number to be <n>, set HLevel.first_number to <n>; by example, with
-    HLevel.first_number set to 0, the first number will be 0 (and not 1).
+    If you want the first number to be <n>, set self.first_number to <n>; by example, with
+    self.first_number set to 0, the first number will be 0 (and not 1).
 """
 
 ################################################################################
@@ -38,10 +38,6 @@ class HLevel(list):
     """
         HLevel class
     """
-
-    # default value is the most common for a hierarchical level but feel free to
-    # change it !
-    first_number = 1
 
     # default representation of the object :
     defaultformat = ".(1111111111)"
@@ -82,13 +78,17 @@ class HLevel(list):
                              "S", "T", "U", "V", "W", "X", "Y", "Z",)        
 
     #///////////////////////////////////////////////////////////////////////////
-    def __init__(self, src=None, formatstr=None):
+    def __init__(self, src=None, formatstr=None, first_number = 1):
         """
                 HLevel.__init__
 
-                src     : (str)
+                src             : (str)
+                formatstr       :  str or None
+                first_number    : (int)
         """
         list.__init__(self)
+
+        self.first_number = first_number
 
         if formatstr is None:
             self.setFormat( HLevel.defaultformat )
@@ -132,7 +132,7 @@ class HLevel(list):
         for index_char, char in enumerate(strnumber[::-1]):
             res += (10 ** index_char) * (ord(char)-65)
             
-        return res + HLevel.first_number
+        return res + self.first_number
 
     #///////////////////////////////////////////////////////////////////////////
     def getRepr(self):
@@ -150,10 +150,10 @@ class HLevel(list):
         # numbers :
         for number_index, number in enumerate(self):
 
-            if number < HLevel.first_number:
-                msg = "(HLevel.getRepr) number {0} is less than HLevel.first_number={1}"
+            if number < self.first_number:
+                msg = "(HLevel.getRepr) number {0} is less than self.first_number={1}"
                 raise Exception(msg.format(number,
-                                           HLevel.first_number))
+                                           self.first_number))
 
             if number_index+1 > len_numbers_format:
                 msg = "HLevel.getRepr : too many numbers in {0}; expected pattern is {1}."
@@ -520,7 +520,7 @@ class HLevel(list):
                    Return the string corresponding to <number> written in the base <base> using
                    the <digits>.
         """
-        (d, m) = divmod(number - HLevel.first_number, base)
+        (d, m) = divmod(number - self.first_number, base)
         if d:
             return self.stringBase(d, base, digits) + digits[m]
         else:
