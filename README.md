@@ -79,7 +79,7 @@ hl2 = HLevel( src="<<②|99|z>>",
 # hl2 ~ 2.99.26
 
 
-print( hl1 > hl2 )            # True
+print( hl1 > hl2 )  # True
 print( hl1 )        # ⑬.2.c)
 print( hl2 )        # <<②|99|z>>
 ```
