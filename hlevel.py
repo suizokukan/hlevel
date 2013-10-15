@@ -363,14 +363,14 @@ class HLevel(list):
         return res
 
     #///////////////////////////////////////////////////////////////////////////
-    def getNumberFromLowercaseGreekLetter( self, strnumber ):
+    def getNumberFromLowercGreekLetter( self, strnumber ):
         """
-                HLevel.getNumberFromLowercaseGreekLetter
+                HLevel.getNumberFromLowercGreekLetter
 
                 strnumber       : (str)
         """
         if len( [char for char in strnumber if char not in HLevel.lowercasegreek_symbols]) != 0:
-            msg = "(HLevel.getNumberFromLowercaseGreekLetter) " \
+            msg = "(HLevel.getNumberFromLowercGreekLetter) " \
                   "In '{0}', there is (at least) one unknown symbol. " \
                   "Allowed symbols are {1}."
             raise Exception(msg.format(strnumber,
@@ -893,7 +893,7 @@ class HLevel(list):
                 self.append( self.getNumberFromFullWidthNumeral( strnumber ))
 
             elif number_format == 'α':
-                self.append( self.getNumberFromLowercaseGreekLetter( strnumber ))
+                self.append( self.getNumberFromLowercGreekLetter( strnumber ))
 
             elif number_format == 'Α':
                 self.append( self.getNumberFromCapitalGreekLetter( strnumber ))
