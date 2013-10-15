@@ -3,7 +3,49 @@ hlevel
 
 A (Python3, GPLv3) very simple library allowing to read/write and compare "Hierarchical Level" objects like "1.2.3", "A.IV.6.b" and so on.
 
+Known formats :
+---------------
+
+```
+    * Arabic numbers ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" ...)
+      negative, null or positive integers
+      
+    * capital letters ("A", "B", "C", "D", "E", ..., "X", "Y", "Z", "AZ", ...)
+      positive integers, normally greater than zero (but see self.first_number)
+    
+    * lower case letters ("a", "b", "c", "d", "e", ..., "x", "y", "z" "az", ...)
+      positive integers, normally greater than zero (but see self.first_number)
+    
+    * capital roman numbers ("I", "II", "III", ... "X", "XI", ... "MDCCCLIX", ...)
+      positive integers, normally greater than zero (but see self.first_number)
+    
+    * lower case roman numbers ("i", "ii", "iii", ... "x", "xi", ... "mdccclix", ...)
+      positive integers, normally greater than zero (but see self.first_number)
+    
+    * enclosed letters ( "①", "②", "③", "④", "⑤", ... "⑯", "⑰", "⑱", "⑲", "⑳" )
+      only 20 numbers available (from 1 to 20)
+      
+    * Japanese numbers ( '〇', '一', '二', '三', ..., '九', "十", "十一", ... "百", ... "千", ... )
+      null ('〇') or positive integers
+    
+    * superscript_symbols ("⁰", "¹", "²", "³", "⁴", "⁵", "⁶", "⁷", "⁸", "⁹")
+      negative, null or positive integers
+
+    * subscript_symbols ("₀", "₁", "₂", "₃", "₄", "₅", "₆", "₇", "₈", "₉")
+      negative, null or positive integers
+
+    * fullwidth_symbols = ("０", "１", "２", "３", "４", "５", "６", "７", "８", "９", ...)
+      negative, null or positive integers
+
+    * lowercasegreek_symbols = ( "α", "β", "γ", "δ", "ε", "ζ", ..., "χ", "ψ", "ω" )
+      positive integers, normally greater than zero (but see self.first_number)
+
+    * capitalgreek_symbols = ( "Α", "Β", "Γ", "Δ", "Ε", "Ζ", ..., "Φ", "Χ", "Ψ", "Ω" )
+      positive integers, normally greater than zero (but see self.first_number)    
+```
+
 A basic example :
+-----------------
 
 ```python
 # separator = '.' ; suffix = ']', no prefix :
