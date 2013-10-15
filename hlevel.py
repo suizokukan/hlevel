@@ -740,7 +740,7 @@ class HLevel(list):
 
                 number  : (int)
         """
-        if number < 1 or number > 9999:
+        if number < self.first_number or number > 9999:
             msg = "HLevel.getReprJapaneseNumber : can interpret number {0} as " \
                   "a Japanese number. Expected range is [1;9999]"
             raise Exception( msg.format(number) )
