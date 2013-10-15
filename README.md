@@ -28,20 +28,20 @@ Known formats :
     * Japanese numbers ( '〇', '一', '二', '三', ..., '九', "十", "十一", ... "百", ... "千", ... )
       null ('〇') or positive integers
     
-    * superscript_symbols ("⁰", "¹", "²", "³", "⁴", "⁵", "⁶", "⁷", "⁸", "⁹")
+    * superscript_symbols ("⁰", "¹", "²", "³", "⁴", "⁵", "⁶", "⁷", "⁸", "⁹", "¹⁰", ...)
       negative, null or positive integers
 
-    * subscript_symbols ("₀", "₁", "₂", "₃", "₄", "₅", "₆", "₇", "₈", "₉")
+    * subscript_symbols ("₀", "₁", "₂", "₃", "₄", "₅", "₆", "₇", "₈", "₉", "₁₀", ...)
       negative, null or positive integers
 
-    * fullwidth_symbols = ("０", "１", "２", "３", "４", "５", "６", "７", "８", "９", ...)
+    * fullwidth_symbols = ("０", "１", "２", "３", "４", "５", "６", "７", "８", "９", "１０", ...)
       negative, null or positive integers
 
-    * lowercasegreek_symbols = ( "α", "β", "γ", "δ", "ε", "ζ", ..., "χ", "ψ", "ω" )
+    * lowercasegreek_symbols = ( "α", "β", "γ", "δ", "ε", "ζ", ..., "χ", "ψ", "ω", "αα", ... )
       positive integers, normally greater than zero (but see self.first_number)
 
-    * capitalgreek_symbols = ( "Α", "Β", "Γ", "Δ", "Ε", "Ζ", ..., "Φ", "Χ", "Ψ", "Ω" )
-      positive integers, normally greater than zero (but see self.first_number)    
+    * capitalgreek_symbols = ( "Α", "Β", "Γ", "Δ", "Ε", "Ζ", ..., "Φ", "Χ", "Ψ", "Ω", "ΑΑ", ... )
+      positive integers, normally greater than zero (but see self.first_number)
 ```
 
 A basic example :
