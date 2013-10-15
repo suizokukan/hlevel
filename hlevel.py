@@ -24,13 +24,23 @@
     * HLevel class
 
     formatstring =   "." (separator : one character)
-                   + "(" (prefix : zero, one or more characters)
+                   + "(" (prefix : zero, one or several characters)
                    + "A.I.3" (symbols followed by the separator, if the separator is a non empty
                               string). Available symbols : see HLevel.reprnum
-                   + ")" (suffix : zero, one or more characters)
+                   + ")" (suffix : zero, one or several characters)
 
     If you want the first number to be <n>, set self.first_number to <n>; by example, with
     self.first_number set to 0, the first number will be 0 (and not 1).
+
+
+    How it works :
+        hl = HLevel( src="(C.IX.3)", formatstr = ".(A.I.1.α)" )
+        hl.append(4)
+        print(hl)               # (C.IX.3.δ)
+
+        hl1 = HLevel( src="(C.IX.3)", formatstr = ".(A.I.1.α)" )
+        hl2 = HLevel( src="{8.7}", formatstr = ".{1.1}" )
+        print(hl1 < hl2)        # True
 """
 
 ################################################################################
