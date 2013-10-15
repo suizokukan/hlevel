@@ -65,6 +65,7 @@ print( hl2 )   # "(C.IX.3)"
 ```
 
 A slightly more complex example (HLevel is derived from list) :
+---------------------------------------------------------------
 
 ```python
 hl1 = HLevel( formatstr = ".①.1.a)" )
