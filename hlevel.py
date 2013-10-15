@@ -70,7 +70,7 @@
     * subscript_symbols ("₀", "₁", "₂", "₃", "₄", "₅", "₆", "₇", "₈", "₉", "₁₀", ...)
       negative, null or positive integers
 
-    * fullwidth_symbols = ("０", "１", "２", "３", "４", "５", "６", "７", "８", "９", "１０", ...)
+    * fullwidthnumerals_symbols = ("０", "１", "２", "３", "４", "５", "６", "７", "８", "９", "１０", ...)
       negative, null or positive integers
 
     * lowercasegreek_symbols = ( "α", "β", "γ", "δ", "ε", "ζ", ..., "χ", "ψ", "ω", "αα", ... )
@@ -126,7 +126,7 @@ class HLevel(list):
                           chr(0x2085), chr(0x2086), chr(0x2087), chr(0x2088), chr(0x2089)
                         )
 
-    fullwidth_symbols = ("０", "１", "２", "３", "４", "５", "６", "７", "８", "９",)
+    fullwidthnumerals_symbols = ("０", "１", "２", "３", "４", "５", "６", "７", "８", "９",)
 
     lowercasegreek_symbols = ( "α", "β", "γ", "δ", "ε", "ζ", "η", "θ",
                                "ι", "κ", "λ", "μ", "ν", "ξ", "ο", "π",
@@ -148,7 +148,7 @@ class HLevel(list):
                 japanesenumber_symbols + \
                 superscript_symbols + \
                 subscript_symbols + \
-                fullwidth_symbols + \
+                fullwidthnumerals_symbols + \
                 lowercasegreek_symbols + \
                 capitalgreek_symbols )
 
@@ -331,12 +331,12 @@ class HLevel(list):
         """
                 HLevel.getNumberFromFullWidthNumeral
         """
-        if len( [char for char in strnumber if char not in HLevel.fullwidth_symbols]) != 0:
+        if len( [char for char in strnumber if char not in HLevel.fullwidthnumerals_symbols]) != 0:
             msg = "(HLevel.getNumberFromFullWidthNumeral) " \
                   "In '{0}', there is (at least) one unknown symbol. " \
                   "Allowed symbols are {1}."
             raise Exception(msg.format(strnumber,
-                                       HLevel.fullwidth_symbols))
+                                       HLevel.fullwidthnumerals_symbols))
 
         data = { "-"    : "-",
                  "０"   : 0,

@@ -325,3 +325,137 @@ class TESTHLevel(unittest.TestCase):
 
         self.assertEqual( str(hlevel1), str(hlevel2) )
 
+    #///////////////////////////////////////////////////////////////////////////
+    def test_SuperscriptNumbers(self):
+        """
+                TESTHLevel.test_SuperscriptNumbers
+        """
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        hlevel1 = HLevel( src="(¹.⁴²⁴.⁴⁰⁹.⁴⁰⁵.⁴⁹⁰)",
+                      formatstr = ".(¹.¹.¹.¹.¹)",
+                      first_number = 1)
+
+        hlevel2 = HLevel( src="(¹.⁴²⁴.⁴⁰⁹.⁴⁰⁵.⁴⁹⁰)",
+                      formatstr = ".(¹.¹.¹.¹.¹)",
+                      first_number = 1)
+
+        self.assertEqual( str(hlevel1), str(hlevel2) )
+
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        hlevel1 = HLevel( src="(¹.⁴²⁴.⁴⁰⁹.⁴⁰⁵.⁴⁹⁰)",
+                      formatstr = ".(¹.¹.¹.¹.¹)",
+                      first_number = 1)
+
+        hlevel2 = HLevel( src = str(hlevel1),
+                     formatstr = ".(¹.¹.¹.¹.¹)",
+                      first_number = 1)
+
+        self.assertEqual( str(hlevel1), str(hlevel2) )
+
+    #///////////////////////////////////////////////////////////////////////////
+    def test_SubscriptNumbers(self):
+        """
+                TESTHLevel.test_SubscriptNumbers
+        """
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        hlevel1 = HLevel( src="(₁₀.₉₄₀.₄₈₀₁.₄.₁)",
+                      formatstr = ".(₁.₁.₁.₁.₁)",
+                      first_number = 1)
+
+        hlevel2 = HLevel( src="(₁₀.₉₄₀.₄₈₀₁.₄.₁)",
+                      formatstr = ".(₁.₁.₁.₁.₁)",
+                      first_number = 1)
+
+        self.assertEqual( str(hlevel1), str(hlevel2) )
+
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        hlevel1 = HLevel( src="(₁₀.₉₄₀.₄₈₀₁.₄.₁)",
+                      formatstr = ".(₁.₁.₁.₁.₁)",
+                      first_number = 1)
+
+        hlevel2 = HLevel( src = str(hlevel1),
+                      formatstr = ".(₁.₁.₁.₁.₁)",
+                      first_number = 1)
+
+        self.assertEqual( str(hlevel1), str(hlevel2) )
+
+    #///////////////////////////////////////////////////////////////////////////
+    def test_FullWidthNumbers(self):
+        """
+                TESTHLevel.test_FullWidthNumbers
+        """
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        hlevel1 = HLevel( src="(１.３１３９.９１９.１３.９)",
+                      formatstr = ".(１.１.１.１.１)",
+                      first_number = 1)
+
+        hlevel2 = HLevel( src="(１.３１３９.９１９.１３.９)",
+                      formatstr = ".(１.１.１.１.１)",
+                      first_number = 1)
+
+        self.assertEqual( str(hlevel1), str(hlevel2) )
+
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        hlevel1 = HLevel( src="(１.３１３９.９１９.１３.９)",
+                      formatstr = ".(１.１.１.１.１)",
+                      first_number = 1)
+
+        hlevel2 = HLevel( src = str(hlevel1),
+                      formatstr = ".(１.１.１.１.１)",
+                      first_number = 1)
+
+        self.assertEqual( str(hlevel1), str(hlevel2) )
+
+    #///////////////////////////////////////////////////////////////////////////
+    def test_LowercGreekLetters(self):
+        """
+                TESTHLevel.test_LowercGreekLetters
+        """
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        hlevel1 = HLevel( src="(α.γωεα.γα.γ.α)",
+                      formatstr = ".(α.α.α.α.α)",
+                      first_number = 1)
+
+        hlevel2 = HLevel( src="(α.γωεα.γα.γ.α)",
+                      formatstr = ".(α.α.α.α.α)",
+                      first_number = 1)
+
+        self.assertEqual( str(hlevel1), str(hlevel2) )
+
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        hlevel1 = HLevel( src="(α.γωεα.γα.γ.α)",
+                      formatstr = ".(α.α.α.α.α)",
+                      first_number = 1)
+
+        hlevel2 = HLevel( src = str(hlevel1),
+                      formatstr = ".(α.α.α.α.α)",
+                      first_number = 1)
+
+        self.assertEqual( str(hlevel1), str(hlevel2) )
+
+    #///////////////////////////////////////////////////////////////////////////
+    def test_CapitalGreekLetters(self):
+        """
+                TESTHLevel.test_CapitalGreekLetters
+        """
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        hlevel1 = HLevel( src="(Α.ΓΩΕΑ.ΓΑ.Γ.Α)",
+                      formatstr = ".(Α.Α.Α.Α.Α)",
+                      first_number = 1)
+
+        hlevel2 = HLevel( src="(Α.ΓΩΕΑ.ΓΑ.Γ.Α)",
+                      formatstr = ".(Α.Α.Α.Α.Α)",
+                      first_number = 1)
+
+        self.assertEqual( str(hlevel1), str(hlevel2) )
+
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        hlevel1 = HLevel( src="(Α.ΓΩΕΑ.ΓΑ.Γ.Α)",
+                      formatstr = ".(Α.Α.Α.Α.Α)",
+                      first_number = 1)
+
+        hlevel2 = HLevel( src = str(hlevel1),
+                      formatstr = ".(Α.Α.Α.Α.Α)",
+                      first_number = 1)
+
+        self.assertEqual( str(hlevel1), str(hlevel2) )
