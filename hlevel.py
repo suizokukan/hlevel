@@ -45,7 +45,7 @@ class HLevel(list):
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # accepted symbols in each format string :
-    reprnum = [ "1", "I", "i", "A", "a", "①", "一", "¹", "₁", "１" ]
+    reprnum = [ "1", "I", "i", "A", "a", "①", "一", "¹", "₁", "１", "α", "Α" ]
 
     arabicnumber_symbols = ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9",)
 
@@ -81,6 +81,14 @@ class HLevel(list):
 
     fullwidth_symbols = ("０", "１", "２", "３", "４", "５", "６", "７", "８", "９",)
 
+    lowercasegreek_symbols = ( "α", "β", "γ", "δ", "ε", "ζ", "η", "θ",
+                               "ι", "κ", "λ", "μ", "ν", "ξ", "ο", "π",
+                               "ρ", "σ", "τ", "υ", "φ", "χ", "ψ", "ω" )
+
+    capitalgreek_symbols = ( "Α", "Β", "Γ", "Δ", "Ε", "Ζ", "Η", "Θ",
+                             "Ι", "Κ", "Λ", "Μ", "Ν", "Ξ", "Ο", "Π",
+                             "Ρ", "Σ", "Τ", "Υ", "Φ", "Χ", "Ψ", "Ω" )
+
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # forbidden characters in prefix and suffix string :
     invalid_chars_in_pre_suffix = (
@@ -93,7 +101,9 @@ class HLevel(list):
                 japanesenumber_symbols + \
                 superscript_symbols + \
                 subscript_symbols + \
-                fullwidth_symbols )
+                fullwidth_symbols + \
+                lowercasegreek_symbols + \
+                capitalgreek_symbols )
 
     #///////////////////////////////////////////////////////////////////////////
     def __init__(self, src=None, formatstr=None, first_number = 1):
@@ -129,6 +139,19 @@ class HLevel(list):
             self.initFromStr(src)
 
     #///////////////////////////////////////////////////////////////////////////
+    def __repr__(self):
+        """
+                HLevel.__repr__
+        """
+        string = "(HLevel) separator='{0}'; prefix='{1}'; " \
+                 "suffix='{2}'; numbers_format='{3}'; data={4}"
+        return string.format(self.separator,
+                             self.prefix,
+                             self.suffix,
+                             self.numbers_format,
+                             ".".join( str(value) for value in self))
+
+    #///////////////////////////////////////////////////////////////////////////
     def getNumberFromArabicNumber( self, strnumber ):
         """
                 HLevel.getNumberFromArabicNumber
@@ -143,6 +166,26 @@ class HLevel(list):
                                        HLevel.arabicnumber_symbols))
 
         return int(strnumber)
+
+    #///////////////////////////////////////////////////////////////////////////
+    def getNumberFromCapitalGreekLetter( self, strnumber ):
+        """
+                HLevel.getNumberFromCapitalGreekLetter
+
+                strnumber       : (str)
+        """
+        if len( [char for char in strnumber if char not in HLevel.capitalgreek_symbols]) != 0:
+            msg = "(HLevel.getNumberFromCapitalGreekLetter) " \
+                  "In '{0}', there is (at least) one unknown symbol. " \
+                  "Allowed symbols are {1}."
+            raise Exception(msg.format(strnumber,
+                                       HLevel.capitalgreek_symbols))
+
+        res = 0
+        for index_char, char in enumerate(strnumber[::-1]):
+            res += (24 ** index_char) * (ord(char) - 0x391 + self.first_number)
+
+        return res
 
     #///////////////////////////////////////////////////////////////////////////
     def getNumberFromCapitalLetter( self, strnumber ):
@@ -313,6 +356,26 @@ class HLevel(list):
         return res
 
     #///////////////////////////////////////////////////////////////////////////
+    def getNumberFromLowercaseGreekLetter( self, strnumber ):
+        """
+                HLevel.getNumberFromLowercaseGreekLetter
+
+                strnumber       : (str)
+        """
+        if len( [char for char in strnumber if char not in HLevel.lowercasegreek_symbols]) != 0:
+            msg = "(HLevel.getNumberFromLowercaseGreekLetter) " \
+                  "In '{0}', there is (at least) one unknown symbol. " \
+                  "Allowed symbols are {1}."
+            raise Exception(msg.format(strnumber,
+                                       HLevel.lowercasegreek_symbols))
+
+        res = 0
+        for index_char, char in enumerate(strnumber[::-1]):
+            res += (24 ** index_char) * (ord(char) - 0x3B1 + self.first_number)
+
+        return res
+
+    #///////////////////////////////////////////////////////////////////////////
     def getNumberFromLowercaseLetter( self, strnumber ):
         """
                 HLevel.getNumberFromLowercaseLetter
@@ -470,6 +533,12 @@ class HLevel(list):
             elif number_format == '１':
                 res.append( self.getReprArabicNumberFullWidth( number ))
 
+            elif number_format == 'α':
+                res.append( self.getReprLowercaseGreekLetter( number ))
+
+            elif number_format == 'Α':
+                res.append( self.getReprCapitalGreekLetter( number ))
+
             else:
                 msg = "HLevel.getRepr : unknown number format '0'; expected formats are {1}."
                 raise Exception(msg.format(number_format,
@@ -523,6 +592,17 @@ class HLevel(list):
             res.append( digit_to_fullwidthdigit[digit] )
 
         return "".join(res)
+
+    #///////////////////////////////////////////////////////////////////////////
+    def getReprCapitalGreekLetter(self, number):
+        """
+                HLevel.getReprCapitalGreekLetter
+
+                number  : (int)
+        """
+        return self.stringBase( number = number,
+                                base = 24,
+                                digits = "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ" )
 
     #///////////////////////////////////////////////////////////////////////////
     def getReprCapitalLetter(self, number):
@@ -643,6 +723,17 @@ class HLevel(list):
                     res.insert( 0, japanese_digits[int(digit)] )
 
         return "".join(res)
+
+    #///////////////////////////////////////////////////////////////////////////
+    def getReprLowercaseGreekLetter(self, number):
+        """
+                HLevel.getReprLowercaseGreekLetter
+
+                number  : (int)
+        """
+        return self.stringBase( number = number,
+                                base = 24,
+                                digits = "αβγδεζηθικλμνξοπρστυφχψω" )
 
     #///////////////////////////////////////////////////////////////////////////
     def getReprLowerCaseLetter(self, number):
@@ -793,6 +884,12 @@ class HLevel(list):
 
             elif number_format == '１':
                 self.append( self.getNumberFromFullWidthNumeral( strnumber ))
+
+            elif number_format == 'α':
+                self.append( self.getNumberFromLowercaseGreekLetter( strnumber ))
+
+            elif number_format == 'Α':
+                self.append( self.getNumberFromCapitalGreekLetter( strnumber ))
 
     #///////////////////////////////////////////////////////////////////////////
     def setFormat(self, formatstr):
