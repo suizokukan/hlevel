@@ -152,6 +152,13 @@ class HLevel(list):
                              ".".join( str(value) for value in self))
 
     #///////////////////////////////////////////////////////////////////////////
+    def __str__(self):
+        """
+                HLevel.__str__
+        """
+        return self.getRepr()
+
+    #///////////////////////////////////////////////////////////////////////////
     def getNumberFromArabicNumber( self, strnumber ):
         """
                 HLevel.getNumberFromArabicNumber
