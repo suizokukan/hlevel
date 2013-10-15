@@ -459,3 +459,28 @@ class TESTHLevel(unittest.TestCase):
                       first_number = 1)
 
         self.assertEqual( str(hlevel1), str(hlevel2) )
+
+    #///////////////////////////////////////////////////////////////////////////
+    def test_findHLevelStringFromAString(self):
+        """
+                TESTHLevel.test_findHLevelStringFromAString
+        """
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        hl = HLevel( formatstr = ".(I.I.I)" )
+        self.assertEqual( hl.findHLevelStringFromAString("aaa (IX.IV.MD) bbb"),
+                          (True, 4, "(IX.IV.MD)") )
+
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        hl = HLevel( formatstr = ".(I.I.I)" )
+        self.assertEqual( hl.findHLevelStringFromAString("aaa (IX.IV.MD bbb"),
+                          (False, None, None) )
+
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        hl = HLevel( formatstr = ".(I.I.I)" )
+        self.assertEqual( hl.findHLevelStringFromAString("aaa IX.IV.MD) bbb"),
+                          (False, None, None) )
+
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        hl = HLevel( formatstr = ".{{I.I.I}}" )
+        self.assertEqual( hl.findHLevelStringFromAString("aaa {{IX.IV.MD}} bbb"),
+                          (True, 4, "{{IX.IV.MD}}") )
