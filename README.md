@@ -18,8 +18,8 @@ hl2 = HLevel( src="(C.IX.3)",
 print(hl1 == hl2)       # renvoie True
 
 # representation :
-print( hl1.getRepr() )   # "C.IX.3]"
-print( hl2.getRepr() )   # "(C.IX.3)"
+print( hl1 )   # "C.IX.3]"
+print( hl2 )   # "(C.IX.3)"
 ```
 
 A slightly more complex example (HLevel is derived from list) :
@@ -37,8 +37,8 @@ hl2 = HLevel( src="<<②|99|z>>",
 
 
 print( hl1 > hl2 )            # True
-print( hl1.getRepr() )        # ⑬.2.c)
-print( hl2.getRepr() )        # <<②|99|z>>
+print( hl1 )        # ⑬.2.c)
+print( hl2 )        # <<②|99|z>>
 ```
 
  
