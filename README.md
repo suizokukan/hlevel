@@ -84,6 +84,10 @@ print( hl1 )        # ⑬.2.c)
 print( hl2 )        # <<②|99|z>>
 ```
 
- 
-
- 
+If you want to find a HLevel substring :
+----------------------------------------
+```python
+hl = HLevel( formatstr = ".(I.I.I)" )
+print( hl.findHLevelStringFromAString("aaa (IX.IV.MD) bbb" ))
+# -> (True, 4, "(IX.IV.MD)")
+```
