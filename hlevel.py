@@ -919,30 +919,30 @@ class HLevel(list):
         return "".join(res)
 
     #///////////////////////////////////////////////////////////////////////////
-    def initFromStr(self, _src):
+    def initFromStr(self, src):
         """
                 HLevel.initFromStr
 
-                _src     : (str)
+                src     : (str)
 
-                Initialize <self> from (str)_src.
+                Initialize <self> from (str)src.
         """
-        if not (_src.startswith(self.prefix) and _src.endswith(self.suffix)):
+        if not (src.startswith(self.prefix) and src.endswith(self.suffix)):
 
             msg = "(HLevel.initFromStr) missing prefix '{0}' or suffix '{1}' in string '{2}'."
             raise Exception(msg.format(self.prefix,
                                        self.suffix,
-                                       _src))
+                                       src))
 
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         self.clear()
 
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # no prefix, no suffix :
-        src = _src[len(self.prefix):-len(self.suffix)]
+        _src = src[len(self.prefix):-len(self.suffix)]
 
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        for strnumber_index, strnumber in enumerate(src.split(self.separator)):
+        for strnumber_index, strnumber in enumerate(_src.split(self.separator)):
 
             if strnumber_index >= len(self.numbers_format):
                 msg = "(HLevel.initFromStr) Too many integers in '{0}'; format string='{1}'"
