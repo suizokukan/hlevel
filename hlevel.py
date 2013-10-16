@@ -224,19 +224,20 @@ class HLevel(list):
         for index_numberf, numberf in enumerate(self.numbers_format[::-1]):
             
             if numberf == '1':
-                pattern += "[" + "|".join(map(re.escape,HLevel.arabicnumber_symbols)) + "]+"
+                pattern += "[" + "|".join(map(re.escape,HLevel.arabicnumber_symbols)) + "]*"
 
             elif numberf == 'I':
-                pattern += "[" + "|".join(map(re.escape,HLevel.capitalromannumber_symbols)) + "]+"
+                pattern += "[" + "|".join(map(re.escape,HLevel.capitalromannumber_symbols)) + "]*"
 
             if index_numberf+1 < len(self.numbers_format):
-                pattern += re.escape(self.separator)
+                pattern += re.escape(self.separator) + "?"
 
         pattern += re.escape(self.suffix)
 
         search = re.search(pattern, src)
         if search is None:
             return (False, None, None)
+
         else:
             return (True,
                     search.start(),

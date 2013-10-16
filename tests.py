@@ -484,3 +484,8 @@ class TESTHLevel(unittest.TestCase):
         hl = HLevel( formatstr = ".{{I.I.I}}" )
         self.assertEqual( hl.findHLevelStringFromAString("aaa {{IX.IV.MD}} bbb"),
                           (True, 4, "{{IX.IV.MD}}") )
+
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        hl = HLevel( formatstr = ".(1.1.1)" )
+        self.assertEqual( hl.findHLevelStringFromAString("(1) \"encore\""),
+                          (True, 0, "(1)") )
