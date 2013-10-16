@@ -208,6 +208,41 @@ class HLevel(list):
         return self.getRepr()
 
     #///////////////////////////////////////////////////////////////////////////
+    def findHLevelStringFromAString(self, src):
+        """
+                HLevel.findHLevelStringFromAString
+
+                src     : (str)
+
+                Return ( (bool)success,
+                         if success, position of the hlevel in <src>,
+                         if success, hlevel string,
+                       )
+        """
+        pattern = re.escape(self.prefix)
+
+        for index_numberf, numberf in enumerate(self.numbers_format[::-1]):
+            
+            if numberf == '1':
+                pattern += "[" + "|".join(map(re.escape,HLevel.arabicnumber_symbols)) + "]+"
+
+            elif numberf == 'I':
+                pattern += "[" + "|".join(map(re.escape,HLevel.capitalromannumber_symbols)) + "]+"
+
+            if index_numberf+1 < len(self.numbers_format):
+                pattern += re.escape(self.separator)
+
+        pattern += re.escape(self.suffix)
+
+        search = re.search(pattern, src)
+        if search is None:
+            return (False, None, None)
+        else:
+            return (True,
+                    search.start(),
+                    src[search.start():search.end()])
+
+    #///////////////////////////////////////////////////////////////////////////
     def getNumberFromArabicNumber( self, strnumber ):
         """
                 HLevel.getNumberFromArabicNumber
@@ -1008,37 +1043,3 @@ class HLevel(list):
         else:
             return digits[mod]
 
-    #///////////////////////////////////////////////////////////////////////////
-    def findHLevelStringFromAString(self, src):
-        """
-                HLevel.findHLevelStringFromAString
-
-                src     : (str)
-
-                Return ( (bool)success,
-                         if success, position of the hlevel in <src>,
-                         if success, hlevel string,
-                       )
-        """
-        pattern = re.escape(self.prefix)
-
-        for index_numberf, numberf in enumerate(self.numbers_format[::-1]):
-            
-            if numberf == '1':
-                pattern += "[" + "|".join(map(re.escape,HLevel.arabicnumber_symbols)) + "]+"
-
-            elif numberf == 'I':
-                pattern += "[" + "|".join(map(re.escape,HLevel.capitalromannumber_symbols)) + "]+"
-
-            if index_numberf+1 < len(self.numbers_format):
-                pattern += re.escape(self.separator)
-
-        pattern += re.escape(self.suffix)
-
-        search = re.search(pattern, src)
-        if search is None:
-            return (False, None, None)
-        else:
-            return (True,
-                    search.start(),
-                    src[search.start():search.end()])
