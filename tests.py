@@ -24,7 +24,7 @@
 
 import unittest
 
-from hlevel import HLevel
+from hlevel.hlevel import HLevel
 
 ################################################################################
 class TESTHLevel(unittest.TestCase):
